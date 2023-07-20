@@ -1,0 +1,300 @@
+48c48
+< #define I2C_ADDR_7BIT           (0x60)
+---
+> #define I2C_ADDR_7BIT           (0x77)
+60,62d59
+< static uint8_t txData[16];
+< static uint8_t rxData[16];
+< static uint32_t event_flag;
+76,77c73,74
+< 	/* Enable the clock to the Switch Matrix */
+< 	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_SWM);
+---
+>     /* Enable the clock to the Switch Matrix */
+>     Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_SWM);
+79,80c76,77
+< 	Chip_SWM_EnableFixedPin(SWM_FIXED_I2C0_SDA);
+< 	Chip_SWM_EnableFixedPin(SWM_FIXED_I2C0_SCL);
+---
+>     Chip_SWM_EnableFixedPin(SWM_FIXED_I2C0_SDA);
+>     Chip_SWM_EnableFixedPin(SWM_FIXED_I2C0_SCL);
+82,84c79,81
+< 	/* Connect the I2C_SDA and I2C_SCL signals to port pins(P0.10, P0.11) */
+< 	Chip_SWM_MovablePinAssign(SWM_I2C_SDA_IO, 10);
+< 	Chip_SWM_MovablePinAssign(SWM_I2C_SCL_IO, 11);
+---
+>     /* Connect the I2C_SDA and I2C_SCL signals to port pins(P0.10, P0.11) */
+>     Chip_SWM_MovablePinAssign(SWM_I2C_SDA_IO, 10);
+>     Chip_SWM_MovablePinAssign(SWM_I2C_SCL_IO, 11);
+87,89c84,86
+< 	/* Enable Fast Mode Plus for I2C pins */
+< 	Chip_IOCON_PinSetI2CMode(LPC_IOCON, IOCON_PIO10, PIN_I2CMODE_FASTPLUS);
+< 	Chip_IOCON_PinSetI2CMode(LPC_IOCON, IOCON_PIO11, PIN_I2CMODE_FASTPLUS);
+---
+>     /* Enable Fast Mode Plus for I2C pins */
+>     Chip_IOCON_PinSetI2CMode(LPC_IOCON, IOCON_PIO10, PIN_I2CMODE_FASTPLUS);
+>     Chip_IOCON_PinSetI2CMode(LPC_IOCON, IOCON_PIO11, PIN_I2CMODE_FASTPLUS);
+91,92c88,89
+< 	/* Disable the clock to the Switch Matrix to save power */
+< 	Chip_Clock_DisablePeriphClock(SYSCTL_CLOCK_SWM);
+---
+>     /* Disable the clock to the Switch Matrix to save power */
+>     Chip_Clock_DisablePeriphClock(SYSCTL_CLOCK_SWM);
+94c91
+< 	/* Configure your own I2C pin muxing here if needed */
+---
+>     /* Configure your own I2C pin muxing here if needed */
+102,103c99,100
+< 	/* Enable I2C clock and reset I2C peripheral */
+< 	Chip_I2C_Init(LPC_I2C);
+---
+>     /* Enable I2C clock and reset I2C peripheral */
+>     Chip_I2C_Init(LPC_I2C);
+105,106c102,103
+< 	/* Setup clock rate for I2C */
+< 	Chip_I2C_SetClockDiv(LPC_I2C, I2C_CLK_DIVIDER);
+---
+>     /* Setup clock rate for I2C */
+>     Chip_I2C_SetClockDiv(LPC_I2C, I2C_CLK_DIVIDER);
+108,109c105,106
+< 	/* Setup I2CM transfer rate */
+< 	Chip_I2CM_SetBusSpeed(LPC_I2C, I2C_BITRATE);
+---
+>     /* Setup I2CM transfer rate */
+>     Chip_I2CM_SetBusSpeed(LPC_I2C, I2C_BITRATE);
+111,112c108,109
+< 	/* Enable Master Mode */
+< 	Chip_I2CM_Enable(LPC_I2C);
+---
+>     /* Enable Master Mode */
+>     Chip_I2CM_Enable(LPC_I2C);
+117,128c114,124
+< 								   uint8_t *txBuffPtr,
+< 								   uint16_t txSize,
+< 								   uint8_t *rxBuffPtr,
+< 								   uint16_t rxSize)
+< {
+< 	/* Setup I2C transfer record */
+< 	i2cmXferRec.slaveAddr = devAddr;
+< 	i2cmXferRec.status = 0;
+< 	i2cmXferRec.txSz = txSize;
+< 	i2cmXferRec.rxSz = rxSize;
+< 	i2cmXferRec.txBuff = txBuffPtr;
+< 	i2cmXferRec.rxBuff = rxBuffPtr;
+---
+>                                    uint8_t *txBuffPtr,
+>                                    uint16_t txSize,
+>                                    uint8_t *rxBuffPtr,
+>                                    uint16_t rxSize) {
+>     /* Setup I2C transfer record */
+>     i2cmXferRec.slaveAddr = devAddr;
+>     i2cmXferRec.status = 0;
+>     i2cmXferRec.txSz = txSize;
+>     i2cmXferRec.rxSz = rxSize;
+>     i2cmXferRec.txBuff = txBuffPtr;
+>     i2cmXferRec.rxBuff = rxBuffPtr;
+130c126
+< 	Chip_I2CM_XferBlocking(LPC_I2C, &i2cmXferRec);
+---
+>     Chip_I2CM_XferBlocking(LPC_I2C, &i2cmXferRec);
+133,134c129,137
+< /* Function to build the LED value for the PCA9532 LED driver & I/O expander */
+< static uint32_t build_led(uint32_t t1)
+---
+> /*****************************************************************************
+>  * Public functions
+>  ****************************************************************************/
+> 
+> /**
+>  * @brief   Handle interrupt from SysTick timer
+>  * @return  Nothing
+>  */
+> void SysTick_Handler(void)
+136c139,140
+< 	uint32_t i, k, out_val = 0;
+---
+>     ticks++;
+> }
+138,141c142,148
+< 	for (i = 0; i < 16; i++) {
+< 		k = ((t1 >> i) & 0x01) ? 0x01 : 0x00;
+< 		out_val |= (k << (i * 2));
+< 	}
+---
+> uint32_t BME280GetId(void)
+> {
+>     uint8_t txData[1] = {0xd0};
+>     uint8_t rxData[1];
+>     SetupXferRecAndExecute(I2C_ADDR_7BIT, txData, 1, rxData, 1);
+>     return rxData[0];
+> }
+143c150,153
+< 	return out_val;
+---
+> void BME280Reset(void)
+> {
+>     uint8_t txData[2] = {0xe0, 0xb6};
+>     SetupXferRecAndExecute(I2C_ADDR_7BIT, txData, 2, NULL, 0);
+146,147c156
+< /* Function sends update to the I/O expander */
+< static void sendI2CMaster(uint16_t i2c_addr, uint32_t ledStateOut)
+---
+> void BME280SetCtrlMeas(uint8_t osrs_t, uint8_t osrs_p, uint8_t mode)
+149c158,160
+< 	int index = 0;
+---
+>     uint8_t txData[2] = {0xf4, (osrs_t << 5) | (osrs_p << 2) | mode};
+>     SetupXferRecAndExecute(I2C_ADDR_7BIT, txData, 2, NULL, 0);
+> }
+151,155c162,166
+< 	txData[index++] = (uint8_t) 0x16;							/* I2C device regAddr */
+< 	txData[index++] = (uint8_t) ((ledStateOut)     & 0xff);		/* I2C device regVal */
+< 	txData[index++] = (uint8_t) ((ledStateOut >> 8)  & 0xff);		/* I2C device regVal */
+< 	txData[index++] = (uint8_t) ((ledStateOut >> 16) & 0xff);		/* I2C device regVal */
+< 	txData[index++] = (uint8_t) ((ledStateOut >> 24) & 0xff);		/* I2C device regVal */
+---
+> void BME280SetConfig(uint8_t t_sb, uint8_t filter)
+> {
+>     uint8_t txData[2] = {0xf5, (t_sb << 5) | (filter << 2)};
+>     SetupXferRecAndExecute(I2C_ADDR_7BIT, txData, 2, NULL, 0);
+> }
+157c168,175
+< 	SetupXferRecAndExecute(i2c_addr, txData, 5, rxData, 0);
+---
+> uint32_t BME280ReadTemperature(void)
+> {
+>     uint8_t txData[1] = {0xfa};
+>     uint8_t rxData[3];
+>     uint32_t temp;
+>     SetupXferRecAndExecute(I2C_ADDR_7BIT, txData, 1, rxData, 3);
+>     temp = (rxData[0] << 12) | (rxData[1] << 4) | (rxData[2] >> 4);
+>     return temp;
+160,162c178,186
+< /*****************************************************************************
+<  * Public functions
+<  ****************************************************************************/
+---
+> void BME280ReadTrim(uint16_t *digi_t1, uint16_t *digi_t2, uint16_t *digi_t3)
+> {
+>     uint8_t txData[1] = {0x88};
+>     uint8_t rxData[6];
+>     SetupXferRecAndExecute(I2C_ADDR_7BIT, txData, 1, rxData, 6);
+>     *digi_t1 = (rxData[1] << 8) | rxData[0];
+>     *digi_t2 = (rxData[3] << 8) | rxData[2];
+>     *digi_t3 = (rxData[5] << 8) | rxData[4];
+> }
+164,168c188
+< /**
+<  * @brief	Handle interrupt from SysTick timer
+<  * @return	Nothing
+<  */
+< void SysTick_Handler(void)
+---
+> int32_t CalibrateTemp(uint32_t raw_t, uint16_t digi_t1, uint16_t digi_t2, uint16_t digi_t3)
+170c190
+< 	ticks++;
+---
+>     int32_t v0, v1, t;
+172,177c192,195
+< 	if ((ticks % 50) == 0) {
+< 		event_flag |= EVENT_LED_BUMP;
+< 	}
+< 	if ((ticks % 125) == 0) {
+< 		event_flag |= EVENT_LED_TOGGLE;
+< 	}
+---
+>     v0 = (((raw_t >> 3) - (((int32_t)digi_t1) << 1)) * ((int32_t) digi_t2)) >> 11;
+>     v1 = (((((raw_t >> 4) - ((int32_t)digi_t1)) * ((raw_t >> 4) - ((int32_t)digi_t1))) >> 12) * ((int32_t)digi_t3)) >> 14;
+>     t = ((v0 + v1) * 5 + 128) >> 8;
+>     return t;
+179a198,203
+> void ShowResult(int32_t temperature)
+> {
+> 
+>     printf("temp: %d\n", temperature);
+> }
+> 
+181,182c205,206
+<  * @brief	Main routine for I2CM example
+<  * @return	Function should not exit
+---
+>  * @brief   Main routine for I2CM example
+>  * @return  Function should not exit
+186c210,212
+< 	uint32_t led_ct = 0;
+---
+>     uint16_t digi_t1, digi_t2, digi_t3;
+>     uint32_t raw_t;
+>     int32_t temperature;
+188,190c214,216
+< 	/* Generic Initialization */
+< 	SystemCoreClockUpdate();
+< 	Board_Init();
+---
+>     /* Generic Initialization */
+>     SystemCoreClockUpdate();
+>     Board_Init();
+192,193c218,219
+< 	/* Clear activity LED */
+< 	Board_LED_Set(0, false);
+---
+>     /* Setup I2C pin muxing */
+>     Init_I2C_PinMux();
+195,196c221,222
+< 	/* Setup I2C pin muxing */
+< 	Init_I2C_PinMux();
+---
+>     /* Allocate I2C handle, setup I2C rate, and initialize I2C clocking */
+>     setupI2CMaster();
+198,199c224,225
+< 	/* Allocate I2C handle, setup I2C rate, and initialize I2C clocking */
+< 	setupI2CMaster();
+---
+>     /* Disable the interrupt for the I2C */
+>     NVIC_DisableIRQ(I2C_IRQn);
+201,202c227,228
+< 	/* Disable the interrupt for the I2C */
+< 	NVIC_DisableIRQ(I2C_IRQn);
+---
+>     /* Enable SysTick Timer */
+>     SysTick_Config(SystemCoreClock / TICKRATE_HZ);
+204,205c230,236
+< 	/* Enable SysTick Timer */
+< 	SysTick_Config(SystemCoreClock / TICKRATE_HZ);
+---
+>     if(BME280GetId() != 0x60) {
+>         while(1);   // Wrong Device ID
+>     }
+>     BME280Reset();
+>     BME280SetCtrlMeas(1, 0, 3);
+>     BME280SetConfig(3, 0);
+>     BME280ReadTrim(&digi_t1, &digi_t2, &digi_t3);
+207,209c238,240
+< 	/* Enter the task loop */
+< 	TASK_LOOP {
+< 		__WFI();
+---
+>     while(ticks < 10) {
+>         __WFI();
+>     }
+211,222c242,248
+< 		/* Bump the off-board LEDs by one */
+< 		if (event_flag & EVENT_LED_BUMP) {
+< 			event_flag &= ~EVENT_LED_BUMP;
+< 			sendI2CMaster(I2C_ADDR_7BIT, build_led(led_ct++));
+< 		}
+< 
+< 		/* Toggle on-board RED LED to show activity. */
+< 		if (event_flag & EVENT_LED_TOGGLE) {
+< 			event_flag &= ~EVENT_LED_TOGGLE;
+< 			Board_LED_Toggle(0);
+< 		}
+< 	}
+---
+>     /* Enter the task loop */
+>     TASK_LOOP {
+>         raw_t = BME280ReadTemperature();
+>         temperature = CalibrateTemp(raw_t, digi_t1, digi_t2, digi_t3);
+>         ShowResult(temperature);
+>         __WFI();
+>     }
